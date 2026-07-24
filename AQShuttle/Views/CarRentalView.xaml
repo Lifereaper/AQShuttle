@@ -1,0 +1,219 @@
+﻿<Window x:Class="AQShuttle.Views.CarRentalView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AQ Car Rentals - Admin View" Height="750" Width="1200"
+        WindowStartupLocation="CenterScreen" Background="#000000">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#00FF00"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#111111"/>
+            <Setter Property="Foreground" Value="#00FF00"/>
+            <Setter Property="BorderBrush" Value="#00FF00"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Margin" Value="0,5,0,10"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Car Rental Tools (Admin)" FontSize="36" HorizontalAlignment="Center" FontWeight="Bold"/>
+            <Button Content="CLOSE" Background="#444444" Foreground="White" FontWeight="Bold" 
+                    HorizontalAlignment="Right" Padding="20,10" Cursor="Hand" Click="BtnClose_Click"/>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.7*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="#0A0A0A" BorderBrush="#00FF00" BorderThickness="1" CornerRadius="10" Padding="15">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="🚗 Add New Vehicle" FontSize="22" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <Grid Grid.Row="0" Margin="0,35,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="5">
+                            <TextBlock Text="Make"/>
+                            <TextBox x:Name="txtMake" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
+                            <TextBlock Text="Model"/>
+                            <TextBox x:Name="txtModel" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="5">
+                            <TextBlock Text="Year"/>
+                            <TextBox x:Name="txtYear" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="5">
+                            <TextBlock Text="Plate Number"/>
+                            <TextBox x:Name="txtPlate" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
+                            <TextBlock Text="Tank Size (Gallons)"/>
+                            <TextBox x:Name="txtTankSize" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Margin="5">
+                            <TextBlock Text="Engine Size"/>
+                            <TextBox x:Name="txtEngine" />
+                        </StackPanel>
+
+                        <Button Grid.Row="2" Grid.Column="2" Content="ADD CAR" Background="#00FF00" Foreground="Black" FontWeight="Bold" Margin="5,10,5,10" Padding="10" Cursor="Hand" Click="BtnAddCar_Click"/>
+                    </Grid>
+
+                    <DataGrid x:Name="dgCars" Grid.Row="1" Background="#111111" Foreground="#00FF00" 
+                              RowBackground="#000000" AlternatingRowBackground="#0A0A0A" BorderBrush="#00FF00" BorderThickness="1" 
+                              AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column"
+                              CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Plate" Binding="{Binding Plate}" Width="1.2*"/>
+                            <DataGridTextColumn Header="Make" Binding="{Binding Make}" Width="*"/>
+                            <DataGridTextColumn Header="Model" Binding="{Binding Model}" Width="*"/>
+                            <DataGridTextColumn Header="Year" Binding="{Binding Year}" Width="0.8*"/>
+                            <DataGridTextColumn Header="Tank (Gal)" Binding="{Binding TankSize}" Width="*"/>
+                            <DataGridTextColumn Header="Engine" Binding="{Binding EngineSize}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Background="#111111" BorderBrush="#00FF00" BorderThickness="1" CornerRadius="10" Padding="15">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="5">
+                        <TextBlock Text="⛽ Return Calculator" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+                        <TextBlock x:Name="txtCalcError" Text="Error message" Foreground="Red" Visibility="Collapsed" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Search / Select Vehicle" Foreground="#888" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="cmbCarSearch" Background="#222222" Foreground="Black" FontSize="16" Padding="6" Margin="0,0,0,10" DisplayMemberPath="DisplayName" SelectionChanged="CmbCarSearch_SelectionChanged"/>
+
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                <TextBlock Text="Tank Size (Gal)" Foreground="#888"/>
+                                <TextBlock x:Name="txtSelectedTankSize" Text="-" FontSize="22" FontWeight="Bold" Foreground="#00FFFF"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Fuel Price ($)" Foreground="#888"/>
+                                <TextBox x:Name="txtFuelPrice" Text="5.50" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,10" HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Level Out" Foreground="#888" FontSize="12" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                <Border Height="100" Width="35" BorderBrush="#888" BorderThickness="2" CornerRadius="4" Background="#1A1A1A" VerticalAlignment="Bottom">
+                                    <Rectangle x:Name="rectFuelOut" Fill="LimeGreen" Height="96" VerticalAlignment="Bottom" RadiusX="2" RadiusY="2"/>
+                                </Border>
+                                <TextBlock x:Name="lblFuelOut" Text="16/16" Foreground="White" FontSize="12" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Level In" Foreground="#888" FontSize="12" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                <Border Height="100" Width="35" BorderBrush="#888" BorderThickness="2" CornerRadius="4" Background="#1A1A1A" VerticalAlignment="Bottom">
+                                    <Rectangle x:Name="rectFuelIn" Fill="LimeGreen" Height="96" VerticalAlignment="Bottom" RadiusX="2" RadiusY="2"/>
+                                </Border>
+                                <TextBlock x:Name="lblFuelIn" Text="16/16" Foreground="White" FontSize="12" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Fuel Out" Foreground="#888" Margin="0,0,0,5"/>
+                                <ComboBox x:Name="cmbFuelOut" Background="#222222" Foreground="Black" SelectedIndex="16" SelectionChanged="FuelInput_SelectionChanged">
+                                    <ComboBoxItem Content="0/16 (Empty)"/>
+                                    <ComboBoxItem Content="1/16"/>
+                                    <ComboBoxItem Content="1/8"/>
+                                    <ComboBoxItem Content="3/16"/>
+                                    <ComboBoxItem Content="1/4"/>
+                                    <ComboBoxItem Content="5/16"/>
+                                    <ComboBoxItem Content="3/8"/>
+                                    <ComboBoxItem Content="7/16"/>
+                                    <ComboBoxItem Content="1/2"/>
+                                    <ComboBoxItem Content="9/16"/>
+                                    <ComboBoxItem Content="5/8"/>
+                                    <ComboBoxItem Content="11/16"/>
+                                    <ComboBoxItem Content="3/4"/>
+                                    <ComboBoxItem Content="13/16"/>
+                                    <ComboBoxItem Content="7/8"/>
+                                    <ComboBoxItem Content="15/16"/>
+                                    <ComboBoxItem Content="16/16 (Full)"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Fuel In" Foreground="#888" Margin="0,0,0,5"/>
+                                <ComboBox x:Name="cmbFuelIn" Background="#222222" Foreground="Black" SelectedIndex="16" SelectionChanged="FuelInput_SelectionChanged">
+                                    <ComboBoxItem Content="0/16 (Empty)"/>
+                                    <ComboBoxItem Content="1/16"/>
+                                    <ComboBoxItem Content="1/8"/>
+                                    <ComboBoxItem Content="3/16"/>
+                                    <ComboBoxItem Content="1/4"/>
+                                    <ComboBoxItem Content="5/16"/>
+                                    <ComboBoxItem Content="3/8"/>
+                                    <ComboBoxItem Content="7/16"/>
+                                    <ComboBoxItem Content="1/2"/>
+                                    <ComboBoxItem Content="9/16"/>
+                                    <ComboBoxItem Content="5/8"/>
+                                    <ComboBoxItem Content="11/16"/>
+                                    <ComboBoxItem Content="3/4"/>
+                                    <ComboBoxItem Content="13/16"/>
+                                    <ComboBoxItem Content="7/8"/>
+                                    <ComboBoxItem Content="15/16"/>
+                                    <ComboBoxItem Content="16/16 (Full)"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <Button Content="CALCULATE COST" Background="#00FFFF" Foreground="Black" FontWeight="Bold" FontSize="14" Padding="12" Margin="0,10,0,15" Cursor="Hand" Click="BtnCalculateFuel_Click"/>
+
+                        <Border Background="#222222" CornerRadius="8" Padding="15">
+                            <StackPanel>
+                                <TextBlock Text="Refueling Charge" Foreground="#888" FontSize="14" HorizontalAlignment="Center"/>
+                                <TextBlock x:Name="txtResult" Text="$0.00" Foreground="#00FF00" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
