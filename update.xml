@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<item>
+    <version>1.0.0.1</version> <!-- Change this number every time you push an update! -->
+    <url>https://github.com/YOUR_GITHUB_USERNAME/AQShuttle/raw/main/AQShuttle_Update.zip</url> <!-- Link to your zipped app -->
+    <changelog>https://github.com/YOUR_GITHUB_USERNAME/AQShuttle/releases</changelog> <!-- -->
+    <mandatory>true</mandatory> <!-- -->
+</item>
