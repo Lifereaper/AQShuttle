@@ -1,0 +1,53 @@
+name: Auto-Build and Release
+
+on:
+  push:
+    branches:
+      - master # Triggers automatically when you push to master
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    permissions:
+      contents: write # Allows GitHub to update your XML file
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' # (Change to 6.0.x or 7.0.x if you use an older version)
+
+      - name: Publish WPF App
+        run: dotnet publish -c Release -o ./publish_output
+
+      - name: Zip the Output
+        run: Compress-Archive -Path ./publish_output/* -DestinationPath AQShuttle_Update.zip
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.${{ github.run_number }} # Auto-increments the version dynamically
+          name: Release v1.0.${{ github.run_number }}
+          files: AQShuttle_Update.zip
+          draft: false
+          prerelease: false
+
+      - name: Auto-Update update.xml
+        run: |
+          $xmlPath = "update.xml"
+          $xml = [xml](Get-Content $xmlPath)
+          $xml.item.version = "1.0.${{ github.run_number }}"
+          $xml.item.url = "https://github.com/${{ github.repository }}/releases/download/v1.0.${{ github.run_number }}/AQShuttle_Update.zip"
+          $xml.Save($xmlPath)
+
+      - name: Commit XML Back to GitHub
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add update.xml
+          git commit -m "Automated version bump to 1.0.${{ github.run_number }}"
+          git push
