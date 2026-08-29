@@ -18,7 +18,17 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x' # (Change to 6.0.x or 7.0.x if you use an older version)
+          dotnet-version: '8.0.x'
+
+      - name: Update AssemblyInfo Version
+        run: |
+          $file = "AQShuttle/AssemblyInfo.cs"
+          if (Test-Path $file) {
+            $content = Get-Content $file
+            $content = $content -replace '\[assembly: AssemblyVersion\(".*"\)\]', '[assembly: AssemblyVersion("1.0.${{ github.run_number }}")]'
+            $content = $content -replace '\[assembly: AssemblyFileVersion\(".*"\)\]', '[assembly: AssemblyFileVersion("1.0.${{ github.run_number }}")]'
+            Set-Content -Path $file -Value $content
+          }
 
       - name: Publish WPF App
         run: dotnet publish -c Release -o ./publish_output -p:Version=1.0.${{ github.run_number }} -p:AssemblyVersion=1.0.${{ github.run_number }} -p:FileVersion=1.0.${{ github.run_number }}
@@ -30,7 +40,7 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v1.0.${{ github.run_number }} # Auto-increments the version dynamically
+          tag_name: v1.0.${{ github.run_number }}
           name: Release v1.0.${{ github.run_number }}
           files: AQShuttle_Update.zip
           draft: false
