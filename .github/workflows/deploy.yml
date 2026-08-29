@@ -21,7 +21,7 @@ jobs:
           dotnet-version: '8.0.x' # (Change to 6.0.x or 7.0.x if you use an older version)
 
       - name: Publish WPF App
-        run: dotnet publish -c Release -o ./publish_output
+        run: dotnet publish -c Release -o ./publish_output -p:Version=1.0.${{ github.run_number }} -p:AssemblyVersion=1.0.${{ github.run_number }} -p:FileVersion=1.0.${{ github.run_number }}
 
       - name: Zip the Output
         run: Compress-Archive -Path ./publish_output/* -DestinationPath AQShuttle_Update.zip
