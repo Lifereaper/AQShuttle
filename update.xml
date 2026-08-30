@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <item>
-  <version>1.0.4</version>
-  <url>https://github.com/Lifereaper/AQShuttle/releases/download/v1.0.4/AQShuttle_Update.zip</url>
+  <version>1.0.6</version>
+  <url>https://github.com/Lifereaper/AQShuttle/releases/download/v1.0.6/AQShuttle_Update.zip</url>
   <changelogText>Updated edit button functionality and improved table layout.</changelogText>
   <mandatory>true</mandatory>
 </item>
