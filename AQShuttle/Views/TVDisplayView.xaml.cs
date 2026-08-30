@@ -1,5 +1,7 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -49,13 +51,50 @@ namespace AQShuttle.Views
             ClockTimer_Tick(null, null);
         }
 
-        private void ClockTimer_Tick(object sender, EventArgs e)
+        // Forces the TV screen to rebuild its layout on command
+        public void ForceRefresh()
+        {
+            _lastDatabaseCount = -1;
+        }
+
+        private async void ClockTimer_Tick(object sender, EventArgs e)
         {
             DateTime now = DateTime.Now;
             txtClock.Text = now.ToString("HH:mm:ss");
             txtDate.Text = now.ToString("dddd, MMM d, yyyy");
 
+            // Poll MySQL for updates every 5 seconds
+            if (now.Second % 5 == 0)
+            {
+                await RefreshFromDatabaseAsync();
+            }
+
             SyncDisplayLists(now);
+        }
+
+        private async Task RefreshFromDatabaseAsync()
+        {
+            try
+            {
+                // Fetch the latest active bookings from MySQL
+                var freshBookings = await DatabaseHelper.GetActiveBookingsAsync();
+
+                if (freshBookings != null)
+                {
+                    _liveDatabase.Clear();
+                    foreach (var b in freshBookings)
+                    {
+                        _liveDatabase.Add(b);
+                    }
+
+                    // Force layout rebuild so edits reflect immediately
+                    ForceRefresh();
+                }
+            }
+            catch
+            {
+                // Ignore temporary database/network glitches to keep TV display stable
+            }
         }
 
         private void SyncDisplayLists(DateTime now)
@@ -84,7 +123,7 @@ namespace AQShuttle.Views
                 }
             }
 
-            // DATE FIX: This ensures a "going" and "return" trip for the same person don't overwrite each other!
+            // Ensures a "going" and "return" trip for the same person don't overwrite each other
             string nextUniqueId = nextBooking != null ? $"{nextBooking.CustomerName}-{nextBooking.BookingDate}-{nextBooking.BookingTime}" : "None";
             string currentUniqueId = _currentNextBooking != null ? $"{_currentNextBooking.CustomerName}-{_currentNextBooking.BookingDate}-{_currentNextBooking.BookingTime}" : "None";
 
@@ -105,7 +144,7 @@ namespace AQShuttle.Views
                 _scrollList.Clear();
                 foreach (var b in _liveDatabase)
                 {
-                    // Strict check: Only hide the trip if Name, Date, AND Time match the sticky banner
+                    // Only hide the trip if Name, Date, AND Time match the sticky banner
                     bool isSticky = _currentNextBooking != null &&
                                     b.CustomerName == _currentNextBooking.CustomerName &&
                                     b.BookingDate == _currentNextBooking.BookingDate &&
