@@ -31,11 +31,17 @@ jobs:
           }
 
       - name: Publish WPF App
-        run: dotnet publish -c Release -o ./publish_output -p:Version=1.0.${{ github.run_number }} -p:AssemblyVersion=1.0.${{ github.run_number }} -p:FileVersion=1.0.${{ github.run_number }}
+        run: dotnet publish AQShuttle/AQShuttle.csproj -c Release -o ./publish_output -p:Version=1.0.${{ github.run_number }} -p:AssemblyVersion=1.0.${{ github.run_number }} -p:FileVersion=1.0.${{ github.run_number }}
+
+      - name: Inject Google Service Key
+        run: |
+          $jsonContent = @"
+          ${{ secrets.GCP_SERVICE_KEY }}
+          "@
+          Set-Content -Path ./publish_output/aq-shuttle-a027889d83f1.json -Value $jsonContent -Encoding UTF8
 
       - name: Zip the Output
         run: Compress-Archive -Path ./publish_output/* -DestinationPath AQShuttle_Update.zip
-
       - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v1
